@@ -3,11 +3,12 @@ export type UserType = "platform" | "non_platform";
 export interface LoginPayload {
   email: string;
   password: string;
-  membership_id?: string;
+  organization_id?: string;
 }
 
 export interface AuthOrganization {
   id: number;
+  organization_id: string;
   name: string;
   code: string;
   membership_id: string;

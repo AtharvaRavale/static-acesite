@@ -14,7 +14,7 @@ export function LoginPage() {
   const from = (location.state as { from?: unknown } | null)?.from;
 
   const [email, setEmail] = useState("");
-  const [membershipId, setMembershipId] = useState("");
+  const [organizationId, setOrganizationId] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,11 +55,11 @@ export function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      const normalizedMembershipId = membershipId.trim().toUpperCase();
+      const normalizedOrganizationId = organizationId.trim().toUpperCase();
       const tokens = await authApi.login({
         email: email.trim(),
         password,
-        ...(normalizedMembershipId ? { membership_id: normalizedMembershipId } : {}),
+        ...(normalizedOrganizationId ? { organization_id: normalizedOrganizationId } : {}),
       });
       await establishSession(tokens);
       navigate(
@@ -147,11 +147,11 @@ export function LoginPage() {
                 </div>
               </div>
 
-              {/* Membership ID */}
+              {/* Organization ID */}
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between gap-3">
-                  <label htmlFor="membership_id" className="block text-sm font-semibold text-foreground/90">
-                    Membership ID
+                  <label htmlFor="organization_id" className="block text-sm font-semibold text-foreground/90">
+                    Organization ID
                   </label>
                   <span className="text-[11px] font-medium text-muted-foreground">
                     Required for organization users
@@ -160,14 +160,14 @@ export function LoginPage() {
                 <div className="relative group">
                   <IdCard className="absolute left-3.5 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-muted-foreground/60 group-focus-within:text-primary transition-colors duration-200" />
                   <input
-                    id="membership_id"
+                    id="organization_id"
                     type="text"
-                    name="membership_id"
+                    name="organization_id"
                     autoComplete="off"
-                    value={membershipId}
-                    onChange={(e) => setMembershipId(e.target.value.toUpperCase())}
-                    placeholder="A123456789"
-                    maxLength={10}
+                    value={organizationId}
+                    onChange={(e) => setOrganizationId(e.target.value.toUpperCase())}
+                    placeholder="ORG12345"
+                    maxLength={8}
                     className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-background/50 border border-border text-sm text-foreground placeholder:text-muted-foreground/50 uppercase tracking-[0.08em] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-background transition-all duration-200 shadow-sm"
                   />
                 </div>

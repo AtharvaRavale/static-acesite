@@ -59,6 +59,7 @@ function parseAuthOrganization(data: unknown): AuthOrganization | null {
   const organization = data as Record<string, unknown>;
   return {
     id: Number(organization.id),
+    organization_id: String(organization.organization_id ?? ""),
     name: String(organization.name ?? ""),
     code: String(organization.code ?? ""),
     membership_id: String(organization.membership_id ?? ""),
