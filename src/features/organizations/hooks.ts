@@ -24,6 +24,7 @@ import type {
   OrganizationListParams,
   OrganizationMembershipListParams,
   OrganizationMembershipWritePayload,
+  OrganizationSetupTreeResponse,
   OrganizationModulesParams,
   OrganizationTreeParams,
   OrganizationUnitListParams,
@@ -49,6 +50,8 @@ export const organizationKeys = {
   details: () => [...organizationKeys.all, "detail"] as const,
   detail: (id: number) => [...organizationKeys.details(), id] as const,
   overview: (id: number) => [...organizationKeys.all, "overview", id] as const,
+  setupTree: (id: number, params: OrganizationTreeParams) =>
+    [...organizationKeys.all, "setup-tree", id, params] as const,
   unitTree: (id: number, params: OrganizationTreeParams) =>
     [...organizationKeys.all, "unit-tree", id, params] as const,
   partnerTree: (id: number, params: OrganizationTreeParams) =>
@@ -406,6 +409,17 @@ export function useOrganizationOverview(id: number | null) {
   });
 }
 
+export function useOrganizationSetupTree(
+  id: number | null,
+  params: OrganizationTreeParams = {}
+) {
+  return useQuery<OrganizationSetupTreeResponse>({
+    queryKey: organizationKeys.setupTree(id ?? -1, params),
+    queryFn: () => organizationsApi.setupTree(id!, params),
+    enabled: id !== null,
+  });
+}
+
 export function useOrganizationUnitTree(
   id: number | null,
   params: OrganizationTreeParams = {}
@@ -607,11 +621,13 @@ export function useOrganizationActivity(
 /* ── Partner organizations ───────────────────────────────────────────────── */
 
 export function usePartnerOrganizations(
-  params: PartnerOrganizationListParams = {}
+  params: PartnerOrganizationListParams = {},
+  enabled = true
 ) {
   return useQuery({
     queryKey: partnerOrganizationKeys.list(params),
     queryFn: () => partnerOrganizationsApi.list(params),
+    enabled,
   });
 }
 
@@ -678,14 +694,25 @@ export function useDeletePartnerOrganization() {
   });
 }
 
+export function usePartnerOrganizationAction() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, action }: { id: number; action: "activate" | "deactivate" }) =>
+      action === "activate" ? partnerOrganizationsApi.activate(id) : partnerOrganizationsApi.deactivate(id),
+    onSuccess: () => invalidatePartnerQueries(queryClient),
+  });
+}
+
 /* ── Partner organization contacts ───────────────────────────────────────── */
 
 export function usePartnerOrganizationContacts(
-  params: PartnerOrganizationContactListParams = {}
+  params: PartnerOrganizationContactListParams = {},
+  enabled = true
 ) {
   return useQuery({
     queryKey: partnerOrganizationContactKeys.list(params),
     queryFn: () => partnerOrganizationContactsApi.list(params),
+    enabled,
   });
 }
 
@@ -764,6 +791,16 @@ export function useDeletePartnerOrganizationContact() {
   });
 }
 
+export function useSetPrimaryPartnerOrganizationContact() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => partnerOrganizationContactsApi.setPrimary(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: partnerOrganizationContactKeys.all });
+    },
+  });
+}
+
 /* ── Departments ─────────────────────────────────────────────────────────── */
 
 export function useDepartments(params: DepartmentListParams = {}) {
@@ -832,6 +869,15 @@ export function useDeleteDepartment() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => departmentsApi.remove(id),
+    onSuccess: () => invalidateDepartmentQueries(queryClient),
+  });
+}
+
+export function useDepartmentAction() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, action }: { id: number; action: "activate" | "deactivate" }) =>
+      action === "activate" ? departmentsApi.activate(id) : departmentsApi.deactivate(id),
     onSuccess: () => invalidateDepartmentQueries(queryClient),
   });
 }
@@ -1179,6 +1225,15 @@ export function useDeleteOrganizationUnit() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => organizationUnitsApi.remove(id),
+    onSuccess: () => invalidateUnitQueries(queryClient),
+  });
+}
+
+export function useOrganizationUnitAction() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, action }: { id: number; action: "activate" | "deactivate" }) =>
+      action === "activate" ? organizationUnitsApi.activate(id) : organizationUnitsApi.deactivate(id),
     onSuccess: () => invalidateUnitQueries(queryClient),
   });
 }

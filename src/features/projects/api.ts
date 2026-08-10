@@ -77,6 +77,7 @@ import type {
   ProjectStructureLevelTransitionWritePayload,
   ProjectStructureLevelUpdatePayload,
   ProjectStructureLevelWritePayload,
+  ProjectStructureTreeResponse,
   ProjectTypeUpdatePayload,
   ProjectTypeWritePayload,
   ProjectUpdatePayload,
@@ -208,6 +209,13 @@ export const projectsApi = {
 
   get: async (id: number): Promise<Project> => {
     const response = await api.get<Project>(`/projects/${id}/`);
+    return response.data;
+  },
+
+  structureTree: async (id: number): Promise<ProjectStructureTreeResponse> => {
+    const response = await api.get<ProjectStructureTreeResponse>(
+      `/projects/${id}/structure-tree/`
+    );
     return response.data;
   },
 

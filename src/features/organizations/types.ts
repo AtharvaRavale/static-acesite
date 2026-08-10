@@ -47,6 +47,7 @@ export interface UserSummary {
 
 export interface Organization {
   id: number;
+  organization_id: string;
   name: string;
   code: string;
   legal_name: string;
@@ -561,6 +562,31 @@ export interface OrganizationOverviewResponse {
 
 export interface OrganizationUnitTreeNode extends OrganizationUnit {
   children: OrganizationUnitTreeNode[];
+}
+
+export interface OrganizationSetupTreeProject {
+  id: number;
+  organization: number;
+  organization_unit: number | null;
+  name: string;
+  code: string;
+  project_number: string;
+  location: string;
+  status: string;
+  status_display: string;
+  image_url: string | null;
+  is_active: boolean;
+}
+
+export interface OrganizationSetupTreeUnit extends OrganizationUnit {
+  projects: OrganizationSetupTreeProject[];
+  children: OrganizationSetupTreeUnit[];
+}
+
+export interface OrganizationSetupTreeResponse {
+  organization: Organization;
+  projects: OrganizationSetupTreeProject[];
+  children: OrganizationSetupTreeUnit[];
 }
 
 export interface PartnerOrganizationTreeNode extends PartnerOrganization {

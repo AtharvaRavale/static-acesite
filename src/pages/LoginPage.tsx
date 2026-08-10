@@ -126,27 +126,6 @@ export function LoginPage() {
             <div className="absolute top-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Email */}
-              <div className="space-y-2.5">
-                <label htmlFor="email" className="block text-sm font-semibold text-foreground/90">
-                  Email Address
-                </label>
-                <div className="relative group">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-muted-foreground/60 group-focus-within:text-primary transition-colors duration-200" />
-                  <input
-                    id="email"
-                    type="email"
-                    name="email"
-                    autoComplete="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@company.com"
-                    required
-                    className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-background/50 border border-border text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-background transition-all duration-200 shadow-sm"
-                  />
-                </div>
-              </div>
-
               {/* Organization ID */}
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between gap-3">
@@ -169,6 +148,27 @@ export function LoginPage() {
                     placeholder="ORG12345"
                     maxLength={8}
                     className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-background/50 border border-border text-sm text-foreground placeholder:text-muted-foreground/50 uppercase tracking-[0.08em] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-background transition-all duration-200 shadow-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="space-y-2.5">
+                <label htmlFor="email" className="block text-sm font-semibold text-foreground/90">
+                  Email Address
+                </label>
+                <div className="relative group">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-muted-foreground/60 group-focus-within:text-primary transition-colors duration-200" />
+                  <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@company.com"
+                    required
+                    className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-background/50 border border-border text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-background transition-all duration-200 shadow-sm"
                   />
                 </div>
               </div>

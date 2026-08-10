@@ -95,6 +95,7 @@ export const projectKeys = {
   detail: (id: number) => [...projectKeys.details(), id] as const,
   profile: (id: number) => [...projectKeys.all, "profile", id] as const,
   validation: (id: number) => [...projectKeys.all, "validation", id] as const,
+  structureTree: (id: number) => [...projectKeys.all, "structure-tree", id] as const,
   availableMasterRoomTypes: (projectId: number) =>
     [...projectKeys.all, "available-master-room-types", projectId] as const,
   availableMasterFlatTypes: (projectId: number) =>
@@ -292,6 +293,14 @@ export function useProject(id: number | null) {
   return useQuery({
     queryKey: projectKeys.detail(id ?? -1),
     queryFn: () => projectsApi.get(id!),
+    enabled: id !== null,
+  });
+}
+
+export function useProjectStructureTree(id: number | null) {
+  return useQuery({
+    queryKey: projectKeys.structureTree(id ?? -1),
+    queryFn: () => projectsApi.structureTree(id!),
     enabled: id !== null,
   });
 }

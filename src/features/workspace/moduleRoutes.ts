@@ -1,19 +1,37 @@
 /**
- * Maps assigned product module codes to workspace app routes.
- * Only include routes that exist in the frontend router.
+ * Workspace route fallbacks for core modules already represented in this
+ * frontend. Project Setup is intentionally forced through the tenant-aware
+ * workspace route; other modules may still provide their own frontend_route.
  */
 const WORKSPACE_MODULE_ROUTES: Record<string, string> = {
-  // Reserved for when dedicated workspace apps ship:
-  // checklist: "/workspace/checklists",
-  // workflow: "/workspace/workflows",
-  // project: "/workspace/projects",
-  // dms: "/workspace/documents",
+  account: "/settings",
+  organization: "/workspace/organization",
+  project: "/workspace/project",
+  taxonomy: "/taxonomy",
+  workflow: "/workflows",
+  checklist: "/checklists",
 };
 
-export function getWorkspaceModuleRoute(moduleCode: string): string | null {
+export function getWorkspaceModuleRoute(
+  moduleCode: string,
+  frontendRoute?: string | null
+): string | null {
   const key = moduleCode.trim().toLowerCase();
   if (!key) return null;
-  return WORKSPACE_MODULE_ROUTES[key] ?? null;
+
+  // Core modules represented by first-party routes in this frontend must
+  // always use the canonical route. This protects tenant navigation from
+  // stale/mistyped ProductModule.frontend_route values (for example
+  // `workflow=/workflow` while the actual React route is `/workflows`).
+  if (key in WORKSPACE_MODULE_ROUTES) {
+    return WORKSPACE_MODULE_ROUTES[key];
+  }
+
+  // Extension/optional modules can still provide their route from the
+  // ProductModule catalog.
+  const route = frontendRoute?.trim();
+  if (route && route.startsWith("/")) return route;
+  return null;
 }
 
 export function listKnownWorkspaceModuleCodes(): string[] {

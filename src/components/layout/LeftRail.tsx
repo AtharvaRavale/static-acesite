@@ -1,12 +1,17 @@
 import {
   Building2,
+  ClipboardCheck,
+  GitBranch,
+  Home,
   Landmark,
   Minus,
   Package,
+  Route,
   PanelLeftClose,
   PanelLeftOpen,
   Plus,
   Shield,
+  Tags,
   Users,
 } from "lucide-react";
 import { useState } from "react";
@@ -14,6 +19,7 @@ import { NavLink } from "react-router-dom";
 import {
   canAccessPlatformRoutes,
   canAccessWorkspaceRoutes,
+  isPlatformSuperuser,
   useAuth,
 } from "@/features/auth";
 import { cn } from "@/lib/utils";
@@ -34,6 +40,14 @@ const PLATFORM_NAV = [
     label: "Organizations",
     icon: Landmark,
   },
+] as const;
+
+const PLATFORM_SUPERUSER_NAV = [
+  { to: "/platform-setup", label: "Organization Setup", icon: Route },
+  { to: "/taxonomy", label: "Taxonomy", icon: Tags },
+  { to: "/workflows", label: "Workflow", icon: GitBranch },
+  { to: "/checklists", label: "Checklist", icon: ClipboardCheck },
+  { to: "/room-catalog", label: "Room & Flat Catalog", icon: Home },
 ] as const;
 
 const WORKSPACE_NAV = [
@@ -60,11 +74,14 @@ export function LeftRail() {
   const [sectionOpen, setSectionOpen] = useState(true);
 
   const showPlatform = canAccessPlatformRoutes(user);
+  const showPlatformSetup = isPlatformSuperuser(user);
   const showWorkspace = canAccessWorkspaceRoutes(user, organization);
   const navItems = showPlatform
-    ? PLATFORM_NAV
+    ? showPlatformSetup
+      ? [...PLATFORM_SUPERUSER_NAV, ...PLATFORM_NAV]
+      : [...PLATFORM_NAV]
     : showWorkspace
-      ? WORKSPACE_NAV
+      ? [...WORKSPACE_NAV]
       : [];
   const sectionLabel = showPlatform
     ? "Platform-Admin-Configurations"

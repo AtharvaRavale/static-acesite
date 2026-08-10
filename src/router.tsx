@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import {
   PlatformRoute,
+  PlatformSuperuserRoute,
   ProtectedRoute,
   WorkspaceRoute,
 } from "@/components/auth";
@@ -18,6 +19,24 @@ function withPlatform(lazyImport: () => Promise<{ Component: React.ComponentType
           <PlatformRoute>
             <Page />
           </PlatformRoute>
+        );
+      },
+    };
+  };
+}
+
+function withPlatformSuperuser(
+  lazyImport: () => Promise<{ Component: React.ComponentType }>
+) {
+  return async () => {
+    const mod = await lazyImport();
+    const Page = mod.Component;
+    return {
+      Component: function PlatformSuperuserGuardedPage() {
+        return (
+          <PlatformSuperuserRoute>
+            <Page />
+          </PlatformSuperuserRoute>
         );
       },
     };
@@ -56,6 +75,14 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <DashboardPage />,
+      },
+      {
+        path: "platform-setup",
+        lazy: withPlatformSuperuser(() =>
+          import("@/pages/platformSetup/PlatformSetupWizardPage").then((m) => ({
+            Component: m.PlatformSetupWizardPage,
+          }))
+        ),
       },
       {
         path: "modules",
@@ -134,10 +161,18 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "workspace",
+        lazy: withWorkspace(() =>
+          import("@/pages/workspace/WorkspaceHomePage").then((m) => ({
+            Component: m.WorkspaceHomePage,
+          }))
+        ),
+      },
+      {
         path: "workspace/modules",
         lazy: withWorkspace(() =>
-          import("@/pages/workspace/MyModulesPage").then((m) => ({
-            Component: m.MyModulesPage,
+          import("@/pages/workspace/WorkspaceHomePage").then((m) => ({
+            Component: m.WorkspaceHomePage,
           }))
         ),
       },
@@ -158,6 +193,38 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "workspace/settings",
+        lazy: withWorkspace(() =>
+          import("@/pages/workspace/WorkspaceSettingsPage").then((m) => ({
+            Component: m.WorkspaceSettingsPage,
+          }))
+        ),
+      },
+      {
+        path: "workspace/settings/:settingsSection",
+        lazy: withWorkspace(() =>
+          import("@/pages/workspace/WorkspaceSettingsPage").then((m) => ({
+            Component: m.WorkspaceSettingsPage,
+          }))
+        ),
+      },
+      {
+        path: "workspace/project",
+        lazy: withWorkspace(() =>
+          import("@/pages/workspace/project/WorkspaceProjectPage").then((m) => ({
+            Component: m.WorkspaceProjectPage,
+          }))
+        ),
+      },
+      {
+        path: "workspace/project/:projectSection",
+        lazy: withWorkspace(() =>
+          import("@/pages/workspace/project/WorkspaceProjectPage").then((m) => ({
+            Component: m.WorkspaceProjectPage,
+          }))
+        ),
+      },
+      {
         path: "projects",
         element: <PlaceholderPage title="Projects" />,
       },
@@ -167,7 +234,10 @@ export const router = createBrowserRouter([
       },
       {
         path: "taxonomy",
-        element: <PlaceholderPage title="Taxonomy" />,
+        lazy: () =>
+          import("@/pages/platformAdmin/TaxonomyAdminPage").then((m) => ({
+            Component: m.TaxonomyAdminPage,
+          })),
       },
       {
         path: "project-access",
@@ -175,11 +245,25 @@ export const router = createBrowserRouter([
       },
       {
         path: "workflows",
-        element: <PlaceholderPage title="Workflows" />,
+        lazy: () =>
+          import("@/pages/workflow/WorkflowAdminPage").then((m) => ({
+            Component: m.WorkflowAdminPage,
+          })),
       },
       {
         path: "checklists",
-        element: <PlaceholderPage title="Checklists" />,
+        lazy: () =>
+          import("@/pages/platformAdmin/ChecklistAdminPage").then((m) => ({
+            Component: m.ChecklistAdminPage,
+          })),
+      },
+      {
+        path: "room-catalog",
+        lazy: withPlatformSuperuser(() =>
+          import("@/pages/platformAdmin/RoomFlatCatalogPage").then((m) => ({
+            Component: m.RoomFlatCatalogPage,
+          }))
+        ),
       },
       {
         path: "users",

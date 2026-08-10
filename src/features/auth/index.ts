@@ -6,6 +6,7 @@ export {
   getDefaultLandingPath,
   isOrganizationUser,
   isPlatformOnlyPath,
+  isPlatformSuperuser,
   isPlatformUser,
   isWorkspacePath,
 } from "./guards";

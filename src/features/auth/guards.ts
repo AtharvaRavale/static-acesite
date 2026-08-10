@@ -2,15 +2,21 @@ import type { AuthOrganization, AuthUser } from "./types";
 
 export function isPlatformUser(user: AuthUser | null | undefined): boolean {
   if (!user) return false;
-  return user.user_type === "platform" || user.is_superuser === true;
+  return user.user_type === "platform";
+}
+
+export function isPlatformSuperuser(
+  user: AuthUser | null | undefined
+): boolean {
+  return Boolean(user && user.user_type === "platform" && user.is_superuser === true);
 }
 
 export function isOrganizationUser(
   user: AuthUser | null | undefined,
-  organization: AuthOrganization | null | undefined
+  _organization?: AuthOrganization | null
 ): boolean {
   if (!user) return false;
-  return user.user_type === "non_platform" && organization != null;
+  return user.user_type === "non_platform";
 }
 
 export function canAccessPlatformRoutes(
@@ -30,6 +36,7 @@ const PLATFORM_PREFIXES = [
   "/modules",
   "/organization-provisioning",
   "/organizations",
+  "/platform-setup",
 ] as const;
 
 export function isPlatformOnlyPath(pathname: string): boolean {
@@ -47,7 +54,7 @@ export function getDefaultLandingPath(
   organization: AuthOrganization | null | undefined
 ): string {
   if (isOrganizationUser(user, organization)) {
-    return "/workspace/modules";
+    return "/workspace";
   }
   if (isPlatformUser(user)) {
     return "/modules";

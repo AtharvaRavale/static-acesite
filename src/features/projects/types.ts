@@ -491,6 +491,21 @@ export interface ProjectLocationNodeClosure {
   created_at: string;
 }
 
+export interface ProjectStructureTreeCounts {
+  structure_levels: number;
+  transitions: number;
+  location_nodes: number;
+  root_location_nodes: number;
+}
+
+export interface ProjectStructureTreeResponse {
+  project: Project;
+  structure_levels: ProjectStructureLevel[];
+  transitions: ProjectStructureLevelTransition[];
+  location_tree: ProjectLocationNode[];
+  counts: ProjectStructureTreeCounts;
+}
+
 /* ── Access / parties / memberships ──────────────────────────────────────── */
 
 export interface ProjectModuleAccess extends AuditFields, ActiveFields {
@@ -757,12 +772,14 @@ export interface MasterRoomTypeAvailabilityListParams extends BaseListParams {
   master_room_type?: number;
   organization?: number;
   organization_unit?: number;
+  project?: number;
 }
 
 export interface MasterFlatTypeAvailabilityListParams extends BaseListParams {
   master_flat_type?: number;
   organization?: number;
   organization_unit?: number;
+  project?: number;
 }
 
 export interface ProjectRoomTypeListParams extends BaseListParams {

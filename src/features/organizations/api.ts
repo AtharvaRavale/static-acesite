@@ -28,6 +28,7 @@ import type {
   OrganizationModuleDetailResponse,
   OrganizationModulesParams,
   OrganizationOverviewResponse,
+  OrganizationSetupTreeResponse,
   OrganizationTreeParams,
   OrganizationUnit,
   OrganizationUnitListParams,
@@ -222,6 +223,16 @@ export const organizationsApi = {
     return response.data;
   },
 
+  setupTree: async (
+    id: number,
+    params: OrganizationTreeParams = {}
+  ): Promise<OrganizationSetupTreeResponse> => {
+    const response = await api.get<OrganizationSetupTreeResponse>(
+      `/organizations/${id}/setup-tree/${buildQueryString(params)}`
+    );
+    return response.data;
+  },
+
   unitTree: async (
     id: number,
     params: OrganizationTreeParams = {}
@@ -404,6 +415,16 @@ export const partnerOrganizationsApi = {
     return response.data;
   },
 
+  activate: async (id: number): Promise<PartnerOrganization> => {
+    const response = await api.post<PartnerOrganization>(`/partner-organizations/${id}/activate/`);
+    return response.data;
+  },
+
+  deactivate: async (id: number): Promise<PartnerOrganization> => {
+    const response = await api.post<PartnerOrganization>(`/partner-organizations/${id}/deactivate/`);
+    return response.data;
+  },
+
   remove: async (id: number): Promise<void> => {
     await api.delete(`/partner-organizations/${id}/`);
   },
@@ -460,6 +481,11 @@ export const partnerOrganizationContactsApi = {
     return response.data;
   },
 
+  setPrimary: async (id: number): Promise<PartnerOrganizationContact> => {
+    const response = await api.post<PartnerOrganizationContact>(`/partner-organization-contacts/${id}/set-primary/`);
+    return response.data;
+  },
+
   remove: async (id: number): Promise<void> => {
     await api.delete(`/partner-organization-contacts/${id}/`);
   },
@@ -506,6 +532,16 @@ export const departmentsApi = {
       `/departments/${id}/`,
       payload as Record<string, unknown>
     );
+  },
+
+  activate: async (id: number): Promise<Department> => {
+    const response = await api.post<Department>(`/departments/${id}/activate/`);
+    return response.data;
+  },
+
+  deactivate: async (id: number): Promise<Department> => {
+    const response = await api.post<Department>(`/departments/${id}/deactivate/`);
+    return response.data;
   },
 
   remove: async (id: number): Promise<void> => {
@@ -760,6 +796,16 @@ export const organizationUnitsApi = {
       `/organization-units/${id}/`,
       payload as Record<string, unknown>
     );
+  },
+
+  activate: async (id: number): Promise<OrganizationUnit> => {
+    const response = await api.post<OrganizationUnit>(`/organization-units/${id}/activate/`);
+    return response.data;
+  },
+
+  deactivate: async (id: number): Promise<OrganizationUnit> => {
+    const response = await api.post<OrganizationUnit>(`/organization-units/${id}/deactivate/`);
+    return response.data;
   },
 
   remove: async (id: number): Promise<void> => {

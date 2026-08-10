@@ -1,6 +1,8 @@
-import { Bell, HelpCircle } from "lucide-react";
-import { isPlatformUser, useAuth } from "@/features/auth";
+import { Bell, HelpCircle, Loader2, LogOut } from "lucide-react";
+import { authApi, isPlatformUser, useAuth } from "@/features/auth";
 import { Logo } from "@/components/ui/Logo";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface TopBarProps {
@@ -9,6 +11,15 @@ interface TopBarProps {
 
 export function TopBar({ className }: TopBarProps) {
   const { user, organization } = useAuth();
+  const navigate = useNavigate();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    await authApi.logout();
+    navigate("/login", { replace: true });
+  };
 
   const initials = user
     ? `${user.first_name?.[0] ?? ""}${user.last_name?.[0] ?? ""}`.toUpperCase() ||
@@ -77,6 +88,20 @@ export function TopBar({ className }: TopBarProps) {
           title={contextLabel}
         >
           {initials}
+        </button>
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={loggingOut}
+          className="ml-1 flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
+          aria-label="Logout"
+          title="Logout"
+        >
+          {loggingOut ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <LogOut className="h-4.5 w-4.5" />
+          )}
         </button>
       </div>
     </header>
