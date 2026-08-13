@@ -7,6 +7,7 @@ import type {
   ExecutionLevelPayload,
   ExecutionNodePayload,
   ExecutionNodeRecord,
+  ExecutionRunRecord,
   ExecutionSchemePayload,
   ExplorerParams,
   ExplorerResponse,
@@ -111,6 +112,11 @@ export const projectWorkspaceApi = {
   deleteExecutionNode: async (id: number): Promise<void> => {
     await api.delete(`/execution-nodes/${id}/`);
   },
+
+  startExecutionRun: async (payload: { project: number; module: number; start_node: number; location_node?: number | null }): Promise<ExecutionRunRecord> =>
+    (await api.post<ExecutionRunRecord>("/execution-runs/start/", payload)).data,
+  executionRuns: async (projectId: number): Promise<{ count: number; results: ExecutionRunRecord[] }> =>
+    (await api.get<{ count: number; results: ExecutionRunRecord[] }>(`/execution-runs/?project=${projectId}&page_size=100`)).data,
 
   createReleasePolicy: async (payload: ReleasePolicyPayload): Promise<ProjectReleasePolicy> =>
     (await api.post<ProjectReleasePolicy>("/project-release-policies/", payload)).data,

@@ -1,21 +1,5 @@
-export function WorkspaceAccessPage() {
-  return (
-    <div className="space-y-5">
-      <div>
-        <p className="font-display text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-          Workspace
-        </p>
-        <h1 className="font-logo text-[1.65rem] font-normal tracking-tight text-foreground">
-          People & Access
-        </h1>
-      </div>
-
-      <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
-        <p className="text-sm leading-6 text-muted-foreground">
-          People & Access will manage organization memberships, unit scopes, and
-          role assignments.
-        </p>
-      </div>
-    </div>
-  );
-}
+import { KeyRound, Plus, Search, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import { Drawer, Metric, PageHead, Panel, Status } from "@/components/ui/ToolKit";
+import { people } from "@/lib/staticData";
+export function WorkspaceAccessPage(){const [q,setQ]=useState("");const [selected,setSelected]=useState(0);const [drawer,setDrawer]=useState(false);const p=people[selected];return <div className="page"><PageHead eyebrow="Workspace / Access" title="People & Project Access" description="Inspect memberships, role assignments and their organization/unit/project scopes without losing the register context." actions={<button className="btn primary" onClick={()=>setDrawer(true)}><Plus size={13}/> Assign access</button>}/><div className="metric-grid"><Metric label="Members" value={people.length} foot="Current organization sample"/><Metric label="Active roles" value="14" foot="Across organization and projects"/><Metric label="Project-scoped" value="7" foot="Assignments limited to projects"/><Metric label="Invitations" value="1" foot="Pending acceptance"/></div><div className="toolbar"><div className="searchbox"><Search/><input className="input" value={q} onChange={e=>setQ(e.target.value)} placeholder="Search user, role or scope…"/></div><div className="grow"/><span className="ref">EFFECTIVE ACCESS</span></div><div className="split wide-inspector"><Panel title="People & assignments" kicker="Workspace register"><table className="data-table"><thead><tr><th>User</th><th>Role</th><th>Scope</th><th>Last active</th><th>Status</th></tr></thead><tbody>{people.filter(x=>(x.name+x.role+x.scope).toLowerCase().includes(q.toLowerCase())).map((x,i)=><tr key={x.email} className={p.email===x.email?"selected":""} onClick={()=>setSelected(i)}><td><strong>{x.name}</strong><div className="faint" style={{fontSize:9}}>{x.email}</div></td><td>{x.role}</td><td>{x.scope}</td><td>{x.last}</td><td><Status tone={x.status==="Active"?"green":"amber"}>{x.status}</Status></td></tr>)}</tbody></table></Panel><Panel title={p.name} kicker="Access inspector" className="inspector"><div className="inspector-section"><div style={{display:"flex",alignItems:"center",gap:9}}><div className="user-avatar" style={{width:34,height:34}}>{p.name.split(" ").map(x=>x[0]).join("")}</div><div><strong>{p.name}</strong><div className="faint" style={{fontSize:9}}>{p.email}</div></div></div></div><div className="inspector-section"><dl className="keyvals"><dt>Top role</dt><dd>{p.role}</dd><dt>Scope</dt><dd>{p.scope}</dd><dt>Status</dt><dd><Status tone={p.status==="Active"?"green":"amber"}>{p.status}</Status></dd></dl></div><div className="inspector-section"><div className="inspector-label">Effective permissions</div><div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{["PROJECT.VIEW","STRUCTURE.UPDATE","CHECKLIST.APPROVE","SNAG.REVIEW"].map(x=><span className="badge brand" key={x}>{x}</span>)}</div></div><div className="inspector-section"><button className="btn" style={{width:"100%"}}><KeyRound size={13}/> Edit role assignment</button></div></Panel></div>{drawer?<Drawer title="Assign role access" onClose={()=>setDrawer(false)} footer={<><button className="btn" onClick={()=>setDrawer(false)}>Cancel</button><button className="btn primary" onClick={()=>setDrawer(false)}>Create assignment</button></>}><div className="field"><label>User</label><select className="select"><option>Neha Patil</option><option>Rohan Mehta</option></select></div><div className="field" style={{marginTop:12}}><label>Role</label><select className="select"><option>Project Manager</option><option>Quality Manager</option><option>Site Engineer</option></select></div><div className="field" style={{marginTop:12}}><label>Scope type</label><select className="select"><option>Project</option><option>Organization unit</option><option>Entire organization</option></select></div><div className="callout" style={{marginTop:12}}><ShieldCheck size={14}/> Assignments remain scoped; the selected role does not become a global permission grant.</div></Drawer>:null}</div>}

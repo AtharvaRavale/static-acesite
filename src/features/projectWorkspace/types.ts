@@ -102,10 +102,15 @@ export interface LocationExplorerNode extends ExplorerNode {
   area_type: string;
   applied_flat_template: number | null;
   applied_flat_template_name: string | null;
+  applied_flat_template_code?: string | null;
+  applied_flat_type?: number | null;
+  applied_flat_type_name?: string | null;
+  checklist_allowed?: boolean;
 }
 
 export interface ExecutionExplorerNode extends ExplorerNode {
   sequence: number;
+  flow_mode_override?: "" | ExecutionFlowMode;
   effective_flow_mode: ExecutionFlowMode;
 }
 
@@ -216,4 +221,21 @@ export interface ReleasePolicyPayload {
   completion_rules?: Record<string, unknown>;
   priority?: number;
   is_active?: boolean;
+}
+
+
+export interface ExecutionRunRecord {
+  id: number;
+  project: number;
+  project_name: string;
+  scheme: number;
+  scheme_name: string;
+  module: number | null;
+  module_code: string | null;
+  module_name: string | null;
+  location_node: number | null;
+  current_node: number | null;
+  current_node_name: string | null;
+  status: "draft" | "running" | "waiting_release" | "completed" | "cancelled";
+  started_at: string | null;
 }

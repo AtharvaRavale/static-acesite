@@ -433,6 +433,10 @@ export interface ProjectLocationNode extends AuditFields, ActiveFields {
   name: string;
   code: string;
   applied_flat_template: number | null;
+  applied_flat_template_name?: string | null;
+  applied_flat_template_code?: string | null;
+  applied_flat_type?: number | null;
+  applied_flat_type_name?: string | null;
   checklist_allowed: boolean;
   path: string;
   depth: number;

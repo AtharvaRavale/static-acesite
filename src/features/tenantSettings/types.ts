@@ -131,7 +131,8 @@ export interface TenantRoleAssignmentPayload {
   role: number;
   scope_type: TenantRoleAssignmentScope;
   organization_units?: number[];
-  scoped_project?: number | null;
+  scoped_project?: number | null; // legacy first selected project
+  scoped_projects?: number[];
   is_active?: boolean;
 }
 
@@ -154,6 +155,8 @@ export interface TenantRoleAssignment {
   partner_organization_name: string | null;
   scoped_project: number | null;
   scoped_project_name: string | null;
+  scoped_projects: number[];
+  scoped_project_names: string[];
   project_id: number | null;
   is_active: boolean;
 }

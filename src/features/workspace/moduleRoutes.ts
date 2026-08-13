@@ -10,6 +10,7 @@ const WORKSPACE_MODULE_ROUTES: Record<string, string> = {
   taxonomy: "/taxonomy",
   workflow: "/workflows",
   checklist: "/checklists",
+  snag: "/snags",
 };
 
 export function getWorkspaceModuleRoute(

@@ -1,50 +1,14 @@
-import { Outlet } from "react-router-dom";
-import { useAuth } from "@/features/auth";
-import { WorkspaceProvider } from "@/features/workspace";
+import { Outlet, useLocation } from "react-router-dom";
 import { LeftRail } from "./LeftRail";
 import { TopBar } from "./TopBar";
 import { WorkspaceTopBar } from "./WorkspaceTopBar";
 
+function StatusBar({workspace}:{workspace:boolean}) {
+  return <footer className="statusbar"><div className="status-left"><span className="live-dot"/><span>{workspace?"WORKSPACE CONTEXT READY":"PLATFORM CONSOLE READY"}</span><span>STATIC DATA</span></div><div className="status-right"><span>SiteOS UX Prototype</span><span>13 AUG 2026</span></div></footer>;
+}
 export function AppLayout() {
-  const { user } = useAuth();
-
-  /*
-   * NON-PLATFORM WORKSPACE
-   *
-   * WorkspaceProvider MUST wrap:
-   * - WorkspaceTopBar
-   * - Workspace Home
-   * - Workspace Settings
-   * - any other component using useWorkspace()
-   */
-  if (user?.user_type === "non_platform") {
-    return (
-      <WorkspaceProvider>
-        <div className="flex h-screen flex-col overflow-hidden bg-background">
-          <WorkspaceTopBar />
-
-          <main className="flex-1 overflow-y-auto">
-            <Outlet />
-          </main>
-        </div>
-      </WorkspaceProvider>
-    );
-  }
-
-  /*
-   * PLATFORM / SUPERADMIN LAYOUT
-   */
-  return (
-    <div className="flex h-screen flex-col overflow-hidden bg-background">
-      <TopBar />
-
-      <div className="flex flex-1 overflow-hidden">
-        <LeftRail />
-
-        <main className="flex-1 overflow-y-auto p-6">
-          <Outlet />
-        </main>
-      </div>
-    </div>
-  );
+  const {pathname}=useLocation();
+  const workspace=pathname.startsWith("/workspace")||pathname.startsWith("/snags");
+  if(workspace) return <div className="site-shell workspace-shell"><WorkspaceTopBar/><main className="site-main workspace-main"><Outlet/></main><StatusBar workspace/></div>;
+  return <div className="site-shell"><TopBar/><div className="site-body"><LeftRail/><main className="site-main"><Outlet/></main></div><StatusBar workspace={false}/></div>;
 }
